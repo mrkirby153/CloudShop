@@ -1,0 +1,18 @@
+# Cloudshop Configuration File
+
+mysql:
+    # The username for the mysql database
+    username: root
+    # The password for the mysql database
+    password: ''
+
+    # The datbase host. Leave default unless you know what you are doing
+    host: localhost
+    # The Database Port. Leave default unless you REALLY know waht you are doing
+    port: 3306
+
+    # The databbase name. Database must be created first
+    dbName: CloudShop
+web:
+    # The Cloudshop web location (http://example.com/cloudshop). WITHOUT the trailing '/'
+    site: http://my_cloudshop_site.com/CloudShop

@@ -1,0 +1,13 @@
+author: mrkirby153
+database: true
+generator: http://dinnerbone.com/minecraft/tools/pluginator/
+main: me.mrkirby153.plugins.cloudshop.CloudShop
+name: CloudShop
+startup: postworld
+version: '1.0'
+depends: [Vault]
+commands:
+    cloudshop:
+        description: CloudShop Command
+        usage: /cloudshop
+        aliases: [CloudShop]
