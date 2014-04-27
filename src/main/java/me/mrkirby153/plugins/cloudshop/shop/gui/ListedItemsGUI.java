@@ -51,6 +51,7 @@ public class ListedItemsGUI implements Listener {
                 if (lore == null)
                     lore = new ArrayList<String>();
                 lore.add(ChatColor.AQUA + "----------");
+                lore.add(ChatColor.GREEN+"ID: "+ChatColor.GOLD+rs.getInt("id"));
                 lore.add(ChatColor.GREEN + "Listed on: " + rs.getTimestamp("dateListed").toString());
                 lore.add(ChatColor.GREEN + "Price: " + ChatColor.GOLD + rs.getString("cost"));
                 if (rs.getBoolean("bought")) {
