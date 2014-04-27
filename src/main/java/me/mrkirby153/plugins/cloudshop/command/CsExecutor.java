@@ -3,6 +3,7 @@ package me.mrkirby153.plugins.cloudshop.command;
 import me.mrkirby153.plugins.cloudshop.CloudShop;
 import me.mrkirby153.plugins.cloudshop.shop.CloudShopper;
 import me.mrkirby153.plugins.cloudshop.shop.Shoppers;
+import me.mrkirby153.plugins.cloudshop.shop.gui.ListedItemsGUI;
 import me.mrkirby153.plugins.cloudshop.utils.ChatHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -135,7 +136,7 @@ public class CsExecutor implements CommandExecutor {
         if (meta.getLore() != null)
             if (meta.getLore().size() > 0) {
                 for (String s : meta.getLore()) {
-                    sb.append(s + "\n");
+                    sb.append(s + "`");
                 }
             }
         String lore = sb.toString();

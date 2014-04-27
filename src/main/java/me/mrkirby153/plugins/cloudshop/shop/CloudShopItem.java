@@ -17,28 +17,28 @@ public class CloudShopItem {
     private String boughtBy;
     private int cost;
 
-    public CloudShopItem(int id){
+    public CloudShopItem(int id) {
         this.id = id;
-        try{
-            ResultSet rs = CloudShop.mysql().query("SELECT * FROM `cs_items` WHERE id = '"+id+"'");
-            if(rs.next()){
+        try {
+            ResultSet rs = CloudShop.mysql().query("SELECT * FROM `cs_items` WHERE id = '" + id + "'");
+            if (rs.next()) {
                 boughtBy = rs.getString("boughtBy");
                 cost = rs.getInt("cost");
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public String getBoughtBy(){
+    public String getBoughtBy() {
         return boughtBy;
     }
 
-    public int getCost(){
+    public int getCost() {
         return cost;
     }
 
-    public ItemStack recosntruct(){
+    public ItemStack recosntruct() {
         // Query database
         try {
             ResultSet rs = CloudShop.mysql().query("SELECT * FROM `cs_items` WHERE id = '" + this.id + "'");
@@ -53,24 +53,26 @@ public class CloudShopItem {
                 ItemStack item = new ItemStack(material, count, damage);
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName(name);
-                for(String ench : enchantments.split(",")){
+                for (String ench : enchantments.split(",")) {
                     String[] idLvl = ench.split(":");
-                    if(idLvl.length < 2)
+                    if (idLvl.length < 2)
                         continue;
                     Enchantment enchantment = Enchantment.getByName(idLvl[0]);
-                    if(enchantment == null)
+                    if (enchantment == null)
                         continue;
                     meta.addEnchant(enchantment, Integer.parseInt(idLvl[1]), true);
                 }
                 // Lore
-                List<String> list = new ArrayList<String>();
-                for(String s : lore.split("\n"))
-                    list.add(s);
-                meta.setLore(list);
+                if (!lore.equalsIgnoreCase("")) {
+                    List<String> list = new ArrayList<String>();
+                    for (String s : lore.split("`"))
+                        list.add(s);
+                    meta.setLore(list);
+                }
                 item.setItemMeta(meta);
                 return item;
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
