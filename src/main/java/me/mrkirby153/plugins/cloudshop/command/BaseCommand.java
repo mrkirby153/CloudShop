@@ -10,16 +10,14 @@ public abstract class BaseCommand {
     private String permissionRequired = "";
     private String commandName;
     private String commandDescription;
-    private int argsRequired;
 
-    private CloudShop plugin = CloudShop.instance();
+    public CloudShop plugin = CloudShop.instance();
 
     public BaseCommand() {
     }
 
-    public BaseCommand(String commandName, int requiredArgs, String description, String permissionRequired) {
+    public BaseCommand(String commandName, String description, String permissionRequired) {
         this.commandName = commandName;
-        this.argsRequired = requiredArgs;
         this.commandDescription = description;
         this.permissionRequired = permissionRequired;
 

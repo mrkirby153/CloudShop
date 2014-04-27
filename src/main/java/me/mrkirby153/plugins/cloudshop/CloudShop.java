@@ -1,5 +1,6 @@
 package me.mrkirby153.plugins.cloudshop;
 
+import me.mrkirby153.plugins.cloudshop.command.Commands;
 import me.mrkirby153.plugins.cloudshop.command.CsExecutor;
 import me.mrkirby153.plugins.cloudshop.listeners.ShopperListener;
 import me.mrkirby153.plugins.cloudshop.shop.Shoppers;
@@ -71,6 +72,7 @@ public class CloudShop extends JavaPlugin {
                     ChatHelper.sendToConsole("Reloaded " + i + " player(s)!");
             }
         }.runTaskLater(this, 30L);
+        Commands.registerAllCommands();
     }
 
 }
