@@ -12,6 +12,7 @@ public class CommandHelp extends BaseCommand {
 
     public CommandHelp() {
         super("help", "Shows this help message", "%all%");
+        Commands.addAlias(this, "?");
     }
 
     @Override
