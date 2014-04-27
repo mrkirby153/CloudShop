@@ -38,6 +38,7 @@ public class MySQL {
 
     /**
      * Query the database for informaton
+     *
      * @param query Query to execute
      * @return Result of the query
      */
@@ -51,8 +52,23 @@ public class MySQL {
         return null;
     }
 
+    public ResultSet query(String query, boolean newResultSet) {
+        if (newResultSet) {
+            try {
+                ResultSet rs = conn.createStatement().executeQuery(query);
+                return rs;
+            } catch (SQLException e) {
+                plugin.getLogger().severe("Error occured when executing query \"" + query + "\"! [" + e.getMessage() + "]");
+            }
+        } else {
+            return query(query);
+        }
+        return null;
+    }
+
     /**
      * Executes an MySQL update statement Asyncronously
+     *
      * @param query The query to update
      */
     public void update(final String query) {
@@ -68,7 +84,7 @@ public class MySQL {
         }.runTaskAsynchronously(plugin);
     }
 
-    public PreparedStatement prepareStatement(String s){
+    public PreparedStatement prepareStatement(String s) {
         try {
             return conn.prepareStatement(s);
         } catch (SQLException e) {
