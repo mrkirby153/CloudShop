@@ -2,13 +2,17 @@ package me.mrkirby153.plugins.cloudshop.shop.gui;
 
 import me.mrkirby153.plugins.cloudshop.CloudShop;
 import me.mrkirby153.plugins.cloudshop.shop.CloudShopItem;
+import me.mrkirby153.plugins.cloudshop.utils.ChatHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,37 +24,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListedItemsGUI extends BukkitRunnable implements Listener {
+public class ListedItemsGUI implements Listener {
     private Inventory inventory;
-    private Plugin plugin;
     private Player player;
-    private int page = 1;
 
     private ArrayList<ItemStack> noClick = new ArrayList<ItemStack>();
-    private ItemStack pgUp;
-    private ItemStack pgDwn;
+    private ItemStack more;
 
     public ListedItemsGUI(Player holder, Plugin plugin) {
-        this.inventory = Bukkit.createInventory(null, 54, "Listed Items:");
+        this.inventory = Bukkit.createInventory(null, 54, "Listed Items: ");
         holder.openInventory(this.inventory);
         this.player = holder;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        runTaskTimer(plugin, 1L, 20L);
+//        runTaskTimer(plugin, 1L, 20L);
+        populate();
     }
 
-    public void run() {
-        if (this.inventory.getViewers().isEmpty()) {
-            cancel();
-            return;
-        }
+    public void populate() {
         this.inventory.clear();
-        int lowerLimit;
-        if (page <= 1)
-            lowerLimit = 0;
-        else
-            lowerLimit = ((page - 1) * 54);
-        int upperLimit = lowerLimit + 54;
-        ResultSet rs = CloudShop.mysql().query("SELECT * FROM cs_items WHERE seller = '" + player.getName() + "' LIMIT " + lowerLimit + ", " + upperLimit, true);
+        ResultSet rs = CloudShop.mysql().query("SELECT * FROM cs_items WHERE seller = '" + player.getName() + "' LIMIT 0, 45", true);
         try {
             while (rs.next()) {
                 ItemStack item = new CloudShopItem(rs.getInt("id")).recosntruct();
@@ -73,45 +65,58 @@ public class ListedItemsGUI extends BukkitRunnable implements Listener {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        more = new ItemStack(Material.DIAMOND);
+        ItemMeta moreMeta = more.getItemMeta();
+        moreMeta.setDisplayName(ChatColor.LIGHT_PURPLE + "View More Items");
+        List<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.WHITE + "Click to view more items online!");
+        moreMeta.setLore(lore);
+        more.setItemMeta(moreMeta);
+        inventory.setItem(49, more);
+        noClick.add(more);
+
         ItemStack nullItem = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 8);
         ItemMeta nullMeta = nullItem.getItemMeta();
-        nullMeta.setDisplayName(Integer.toString(page));
+        nullMeta.setDisplayName(" ");
         nullItem.setItemMeta(nullMeta);
+
         for (int i = 0; i < inventory.getSize(); i++) {
             if (inventory.getItem(i) == null)
                 inventory.setItem(i, nullItem);
         }
         noClick.add(nullItem);
-        // Page forward/backward
-        pgUp = new ItemStack(Material.ARROW);
-        ItemMeta forwardMeta = pgUp.getItemMeta();
-        forwardMeta.setDisplayName(ChatColor.GOLD + "Go to page: " + Integer.toString(page + 1));
-        pgUp.setItemMeta(forwardMeta);
-        inventory.setItem(53, pgUp);
-        noClick.add(pgUp);
-
-        if (page > 1) {
-            pgDwn = new ItemStack(Material.ARROW);
-            ItemMeta bkmeta = pgDwn.getItemMeta();
-            bkmeta.setDisplayName(ChatColor.GOLD + "Go to page: " + Integer.toString(page - 1));
-            pgDwn.setItemMeta(bkmeta);
-            inventory.setItem(45, pgDwn);
-            noClick.add(pgDwn);
-        }
     }
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (event.getCurrentItem() != null) {
+            if (event.getCurrentItem().equals(more)) {
+                ChatHelper.sendToPlayer((Player) event.getWhoClicked(), ChatColor.GOLD + "View more items here: @WEBSITE@");
+                ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.NOTE_PLING, 1, 0.5F);
+                event.getWhoClicked().closeInventory();
+                event.setCancelled(true);
+                new BukkitRunnable() {
+                    public void run() {
+                        cleanup();
+                    }
+                }.runTask(CloudShop.instance());
+                return;
+            }
             if (noClick.contains(event.getCurrentItem()))
                 event.setCancelled(true);
-            //TODO: Fix pagination
-            if (event.getCurrentItem().equals(pgDwn)) {
-                page -= 1;
-            }
-            if (event.getCurrentItem().equals(pgUp)) {
-                page += 1;
-            }
         }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        cleanup();
+    }
+
+    private void cleanup() {
+        HandlerList.unregisterAll(this);
+        inventory = null;
+        player = null;
+//        noClick = null;
+        more = null;
     }
 }
