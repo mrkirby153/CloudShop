@@ -109,7 +109,7 @@ public class CsExecutor implements CommandExecutor {
                     ChatHelper.sendToPlayer(p, ChatColor.DARK_PURPLE + args[1] + ChatColor.RED + " is not a number!");
                     return true;
                 }
-                listItem(p.getItemInHand(), p.getName(), Integer.parseInt(args[1]));
+                CloudShopper.listItem(p.getItemInHand(), p.getName(), Integer.parseInt(args[1]));
                 return  true;
             }
             if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("unlist")){
@@ -120,58 +120,5 @@ public class CsExecutor implements CommandExecutor {
         return true;
     }
 
-    private static void listItem(ItemStack itemStack, String playerName, int cost) {
-        ItemStack item = itemStack.clone();
-        ItemMeta meta = item.getItemMeta();
-        String name = (item.getItemMeta().getDisplayName() == null) ? "" : item.getItemMeta().getDisplayName();
-        int count = item.getAmount();
-        short damage = item.getDurability();
 
-        // Encode Enchantments
-        StringBuilder sb = new StringBuilder();
-        String enchs = "";
-        if (item.getEnchantments().size() > 0) {
-            for (Map.Entry<Enchantment, Integer> ench : item.getEnchantments().entrySet()) {
-                sb.append(ench.getKey().getName() + ":" + ench.getValue() + ",");
-            }
-            enchs = sb.toString();
-            enchs = enchs.substring(0, enchs.length() - 1);
-        }
-        sb = new StringBuilder();
-        if (meta.getLore() != null)
-            if (meta.getLore().size() > 0) {
-                for (String s : meta.getLore()) {
-                    sb.append(s + "`");
-                }
-            }
-        String lore = sb.toString();
-        // Execute Query
-        PreparedStatement prepared = CloudShop.mysql().prepareStatement("INSERT INTO cs_items (`seller`, `cost`, `material`, `damage`, `count`, `name`, `enchantments`, `lore`, `dateListed`, `bought`, `boughtby`, `removed`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        try {
-            prepared.setString(1, playerName);
-            prepared.setInt(2, cost);
-            prepared.setString(3, item.getType().toString());
-            prepared.setShort(4, damage);
-            prepared.setInt(5, count);
-            prepared.setString(6, name);
-            prepared.setString(7, enchs);
-            prepared.setString(8, lore);
-            prepared.setTimestamp(9, new Timestamp(new Date().getTime()));
-            prepared.setString(10, "0");
-            prepared.setString(11, "");
-            prepared.setString(12, "0");
-            prepared.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        Player p = Bukkit.getPlayerExact(playerName);
-        String mat = WordUtils.capitalizeFully(item.getType().toString().replace("_", " "));
-        if (name == "")
-            name = item.getItemMeta().getDisplayName();
-        ChatHelper.sendToPlayer(p, ChatColor.GREEN + "Listed " + ChatColor.GOLD + name + ChatColor.GREEN + " ("
-                + ChatColor.GOLD + mat + ChatColor.GREEN + ") for " + ChatColor.GOLD + cost
-                + CloudShop.instance().economy.currencyNamePlural() + ChatColor.GREEN + "!");
-        p.getInventory().removeItem(itemStack);
-        p.playSound(p.getLocation(), Sound.NOTE_PLING, 1, 2);
-    }
 }
