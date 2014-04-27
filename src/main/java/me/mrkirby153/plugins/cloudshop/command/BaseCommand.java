@@ -11,6 +11,7 @@ public abstract class BaseCommand {
     private String commandName;
     private String commandDescription;
 
+    public final String notPlayer = "You must be a player to preform this comamnd!";
     public CloudShop plugin = CloudShop.instance();
 
     public BaseCommand() {
@@ -58,4 +59,5 @@ public abstract class BaseCommand {
      * @param args   The respective areguments for the command
      */
     public abstract void execute(CommandSender sender, String[] args);
+
 }
