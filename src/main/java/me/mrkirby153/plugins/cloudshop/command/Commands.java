@@ -15,4 +15,12 @@ public class Commands {
             CloudShop.instance().getLogger().severe("Attempted to register " + command.getName() + " when it already exists!");
         }
     }
+
+    public static BaseCommand findCommand(String name){
+        for(BaseCommand cmd : commands){
+            if(cmd.getName().equalsIgnoreCase(name))
+                return cmd;
+        }
+        return null;
+    }
 }
