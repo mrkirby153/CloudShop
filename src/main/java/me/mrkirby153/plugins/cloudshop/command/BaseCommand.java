@@ -52,6 +52,7 @@ public abstract class BaseCommand {
         return this.commandDescription;
     }
 
+
     /**
      * Called when the correct number of arguements are passed along with this command
      *
@@ -59,12 +60,4 @@ public abstract class BaseCommand {
      * @param args   The respective areguments for the command
      */
     public abstract void execute(CommandSender sender, String[] args);
-
-    /**
-     * Called when an incorrect number of arguments are passed to the command
-     *
-     * @param expected The expected number of arguments
-     * @param got      The actual number of arguments recieved.
-     */
-    public abstract void illegalArguments(int expected, int got);
 }
