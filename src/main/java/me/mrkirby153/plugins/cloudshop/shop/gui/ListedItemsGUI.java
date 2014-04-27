@@ -22,7 +22,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ListedItemsGUI implements Listener {
@@ -62,7 +61,6 @@ public class ListedItemsGUI implements Listener {
                 meta.setLore(lore);
                 item.setItemMeta(meta);
                 inventory.addItem(item);
-                storeItems.put(item, rs.getInt("id"));
                 noClick.add(item);
             }
         } catch (SQLException e) {
