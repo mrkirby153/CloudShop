@@ -75,6 +75,8 @@ public class CsExecutor implements CommandExecutor {
                     return true;
                 }
                 Player p = (Player) sender;
+                plugin.getServer().getPluginManager().registerEvents(new ListedItemsGUI(p, plugin), plugin);
+                return true;
             }
             if (args[0].equalsIgnoreCase("list")) {
                 if (!(sender instanceof Player)) {
