@@ -22,6 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListedItemsGUI implements Listener {
@@ -61,6 +62,7 @@ public class ListedItemsGUI implements Listener {
                 meta.setLore(lore);
                 item.setItemMeta(meta);
                 inventory.addItem(item);
+                storeItems.put(item, rs.getInt("id"));
                 noClick.add(item);
             }
         } catch (SQLException e) {
@@ -103,10 +105,13 @@ public class ListedItemsGUI implements Listener {
                 }.runTask(CloudShop.instance());
                 return;
             }
-            if (noClick.contains(event.getCurrentItem()))
-                event.setCancelled(true);
+
+        }
+        if (noClick.contains(event.getCurrentItem())) {
+            event.setCancelled(true);
         }
     }
+
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
