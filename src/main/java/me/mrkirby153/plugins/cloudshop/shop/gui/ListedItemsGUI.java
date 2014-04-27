@@ -42,7 +42,7 @@ public class ListedItemsGUI implements Listener {
 
     public void populate() {
         this.inventory.clear();
-        ResultSet rs = CloudShop.mysql().query("SELECT * FROM cs_items WHERE seller = '" + player.getName() + "' LIMIT 0, 45", true);
+        ResultSet rs = CloudShop.mysql().query("SELECT * FROM cs_items WHERE seller = '" + player.getName() + "' AND removed = '0' LIMIT 0, 45", true);
         try {
             while (rs.next()) {
                 ItemStack item = new CloudShopItem(rs.getInt("id")).recosntruct();
