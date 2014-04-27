@@ -143,7 +143,7 @@ public class CsExecutor implements CommandExecutor {
             }
         String lore = sb.toString();
         // Execute Query
-        PreparedStatement prepared = CloudShop.mysql().prepareStatement("INSERT INTO cs_items (`seller`, `cost`, `material`, `damage`, `count`, `name`, `enchantments`, `lore`, `dateListed`, `bought`, `boughtby`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        PreparedStatement prepared = CloudShop.mysql().prepareStatement("INSERT INTO cs_items (`seller`, `cost`, `material`, `damage`, `count`, `name`, `enchantments`, `lore`, `dateListed`, `bought`, `boughtby`, `removed`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         try {
             prepared.setString(1, playerName);
             prepared.setInt(2, cost);
@@ -156,6 +156,7 @@ public class CsExecutor implements CommandExecutor {
             prepared.setTimestamp(9, new Timestamp(new Date().getTime()));
             prepared.setString(10, "0");
             prepared.setString(11, "");
+            prepared.setString(12, "0");
             prepared.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
