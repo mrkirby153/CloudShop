@@ -2,6 +2,9 @@ package me.mrkirby153.plugins.cloudshop.command;
 
 import me.mrkirby153.plugins.cloudshop.CloudShop;
 import me.mrkirby153.plugins.cloudshop.command.general.CommandHelp;
+import me.mrkirby153.plugins.cloudshop.command.items.CommandList;
+import me.mrkirby153.plugins.cloudshop.command.items.CommandListed;
+import me.mrkirby153.plugins.cloudshop.command.web.CommandLink;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +32,9 @@ public class Commands {
 
     public static void registerAllCommands(){
         registerCommand(new CommandHelp());
+        registerCommand(new CommandLink());
+        registerCommand(new CommandListed());
+        registerCommand(new CommandList());
     }
 
     public static void addAlias(BaseCommand cmd, String alias){
