@@ -31,6 +31,8 @@ public class CommandHelp extends BaseCommand {
     private void showHelpPlayer(Player player, int page) {
         ArrayList<BaseCommand> cmds = Commands.commandList();
         double totalCmdPgs = Math.ceil(page / 12D);
+        if (page > totalCmdPgs)
+            page = (int) totalCmdPgs;
         player.sendMessage(ChatColor.BLUE + "------ Cloudshop (" + page + "/" + (int) totalCmdPgs + ") ------");
         for (int i = (page - 1) * 12; i < ((page - 1) * 12) + 12; i++) {
             if (i >= cmds.size())
