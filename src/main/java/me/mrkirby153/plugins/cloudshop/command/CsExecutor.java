@@ -112,6 +112,9 @@ public class CsExecutor implements CommandExecutor {
                 listItem(p.getItemInHand(), p.getName(), Integer.parseInt(args[1]));
                 return  true;
             }
+            if(args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("unlist")){
+                //TODO: Deleting items
+            }
         }
         ChatHelper.send(sender, ChatColor.RED + "Unknown Command!");
         return true;
