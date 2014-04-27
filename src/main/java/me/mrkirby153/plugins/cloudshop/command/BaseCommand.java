@@ -1,5 +1,6 @@
 package me.mrkirby153.plugins.cloudshop.command;
 
+import me.mrkirby153.plugins.cloudshop.CloudShop;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -10,6 +11,11 @@ public abstract class BaseCommand {
     private String commandName;
     private String commandDescription;
     private int argsRequired;
+
+    private CloudShop plugin = CloudShop.instance();
+
+    public BaseCommand() {
+    }
 
     public BaseCommand(String commandName, int requiredArgs, String description, String permissionRequired) {
         this.commandName = commandName;
