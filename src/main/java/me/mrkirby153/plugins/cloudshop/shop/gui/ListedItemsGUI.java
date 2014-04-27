@@ -36,7 +36,6 @@ public class ListedItemsGUI implements Listener {
         holder.openInventory(this.inventory);
         this.player = holder;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-//        runTaskTimer(plugin, 1L, 20L);
         populate();
     }
 
