@@ -116,7 +116,6 @@ public class ListedItemsGUI implements Listener {
         HandlerList.unregisterAll(this);
         inventory = null;
         player = null;
-//        noClick = null;
         more = null;
     }
 }
