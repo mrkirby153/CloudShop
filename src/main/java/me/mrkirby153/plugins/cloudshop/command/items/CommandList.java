@@ -23,7 +23,7 @@ public class CommandList extends BaseCommand {
             return;
         }
         Player p = (Player) sender;
-        CloudShopper cs = Shoppers.findShopperByName(p.getName());
+        CloudShopper cs = Shoppers.findShopperByUUID(p.getUniqueId());
         if (cs == null) {
             ChatHelper.sendToPlayer(p, ChatColor.RED + "You must register via " + ChatColor.GOLD + "/cloudshop link");
             return;
@@ -37,7 +37,7 @@ public class CommandList extends BaseCommand {
                 ChatHelper.sendToPlayer(p, ChatColor.GOLD + "\"" + args[0] + "\" is not numeric");
                 return;
             }
-            CloudShopper.listItem(p.getItemInHand(), p.getName(), Integer.parseInt(args[0]));
+            CloudShopper.listItem(p.getItemInHand(), p.getUniqueId(), Integer.parseInt(args[0]));
         }
     }
 }

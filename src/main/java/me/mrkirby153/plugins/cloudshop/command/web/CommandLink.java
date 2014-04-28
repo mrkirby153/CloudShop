@@ -24,13 +24,13 @@ public class CommandLink extends BaseCommand {
             return;
         }
         Player p = (Player) sender;
-        CloudShopper cs = Shoppers.findShopperByName(p.getName());
+        CloudShopper cs = Shoppers.findShopperByUUID(p.getUniqueId());
         if (cs.isLinked()) {
             ChatHelper.sendToPlayer(p, ChatColor.DARK_GREEN + "You are already registered on this server!");
             p.playSound(p.getLocation(), Sound.NOTE_BASS, 1, 1);
             return;
         }
-        String code = Shoppers.registerNewPlayer(p.getName());
+        String code = Shoppers.registerNewPlayer(p.getUniqueId());
         ChatHelper.sendToPlayer(p, ChatColor.GOLD + "Please visit " + ChatColor.GREEN +
                 CloudShop.instance().getConfig().getString("web.site") + "/register" + ChatColor.GOLD +
                 " and input the code " + ChatColor.BLUE + "[" + code + "]" + ChatColor.GOLD + " when asked!");

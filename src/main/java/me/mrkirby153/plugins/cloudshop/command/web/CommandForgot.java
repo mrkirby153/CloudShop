@@ -20,7 +20,7 @@ public class CommandForgot extends BaseCommand {
             return;
         }
         Player p = (Player) sender;
-        CloudShopper cs = Shoppers.findShopperByName(p.getName());
+        CloudShopper cs = Shoppers.findShopperByUUID(p.getUniqueId());
         String code = Shoppers.forgot(cs.getName());
         ChatHelper.sendToPlayer(p, ChatColor.GOLD + "Your new link code is " + ChatColor.GREEN + "[" + code + "]");
     }

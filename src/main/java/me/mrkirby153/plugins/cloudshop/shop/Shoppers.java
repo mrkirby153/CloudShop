@@ -3,6 +3,7 @@ package me.mrkirby153.plugins.cloudshop.shop;
 import me.mrkirby153.plugins.cloudshop.CloudShop;
 import me.mrkirby153.plugins.cloudshop.utils.ChatHelper;
 import org.apache.commons.lang.RandomStringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -10,15 +11,16 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class Shoppers {
     public static ArrayList<CloudShopper> shoppers = new ArrayList<CloudShopper>();
 
-    public static CloudShopper registerShopper(String playerName) {
-        CloudShopper shopper = new CloudShopper(playerName);
+    public static CloudShopper registerShopper(UUID uuid) {
+        CloudShopper shopper = new CloudShopper(uuid);
         if (shoppers.contains(shopper)) {
-            ChatHelper.sendToConsole(Level.SEVERE, "Attempted to register '" + playerName + "' as a new shopper while he" +
+            ChatHelper.sendToConsole(Level.SEVERE, "Attempted to register '" + Bukkit.getPlayer(uuid) + "' as a new shopper while he" +
                     " already exists!");
             return null;
         }
@@ -37,25 +39,26 @@ public class Shoppers {
         return shopper;
     }
 
-    public static void unregisterShopper(String playerName) {
-        CloudShopper shopper = findShopperByName(playerName);
+    public static void unregisterShopper(UUID uuid) {
+        CloudShopper shopper = findShopperByUUID(uuid);
         if (shopper == null) {
-            ChatHelper.sendToConsole(Level.SEVERE, "Attempted to unregister '" + playerName + "' but he does not exist!");
+            ChatHelper.sendToConsole(Level.SEVERE, "Attempted to unregister '" + Bukkit.getPlayer(uuid).getName() + "' but he does not exist!");
             return;
         }
         shoppers.remove(shopper);
     }
 
-    public static CloudShopper findShopperByName(String shopper) {
+    public static CloudShopper findShopperByUUID(UUID uuid) {
         for (CloudShopper shop : shoppers) {
-            if (shop.getName().equalsIgnoreCase(shopper))
+            if (shop.getName().equalsIgnoreCase(uuid.toString()))
                 return shop;
         }
         return null;
     }
 
+
     public static void unregisterShopper(Player player) {
-        CloudShopper shopper = findShopperByName(player.getName());
+        CloudShopper shopper = findShopperByUUID(player.getUniqueId());
         if (shopper == null) {
             ChatHelper.sendToConsole(Level.SEVERE, "Attempted to unregister '" + player.getName() + "' but he does not exist!");
             return;
@@ -63,13 +66,13 @@ public class Shoppers {
         shoppers.remove(shopper);
     }
 
-    public static String registerNewPlayer(String playerName) {
-        if (findShopperByName(playerName).isLinked()) {
+    public static String registerNewPlayer(UUID uuid) {
+        if (findShopperByUUID(uuid).isLinked()) {
             return null;
         }
         String nextId = RandomStringUtils.randomAlphanumeric(5);
-        CloudShop.mysql().update("INSERT INTO `cs_link` (`username`, `linkCode`, `time`, `used`) VALUES ('"
-                + playerName + "', '" + nextId + "', '" + new Timestamp(new Date().getTime()) + "', '0')");
+        CloudShop.mysql().update("INSERT INTO `cs_link` (`uuid`, `linkCode`, `time`, `used`) VALUES ('"
+                + uuid.toString() + "', '" + nextId + "', '" + new Timestamp(new Date().getTime()) + "', '0')");
         return nextId;
     }
 

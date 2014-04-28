@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class ChatHelper {
@@ -18,8 +19,8 @@ public class ChatHelper {
         p.sendMessage(ChatColor.WHITE + "[" + ChatColor.AQUA + "CloudShop" + ChatColor.WHITE + "] " + message);
     }
 
-    public static void sendToPlayer(String playerName, String message) {
-        Player p = Bukkit.getPlayerExact(playerName);
+    public static void sendToPlayer(UUID uuid, String message) {
+        Player p = Bukkit.getPlayer(uuid);
         if (p != null)
             sendToPlayer(p, message);
     }

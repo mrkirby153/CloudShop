@@ -17,14 +17,15 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class CloudShopper {
     private Player player;
 
 
-    public CloudShopper(String playerName) {
-        this.player = Bukkit.getPlayerExact(playerName);
+    public CloudShopper(UUID uuid) {
+        this.player = Bukkit.getPlayer(uuid);
     }
 
     public CloudShopper(Player player) {
@@ -32,20 +33,20 @@ public class CloudShopper {
     }
 
     public String getName() {
-        return this.player.getName();
+        return this.player.getUniqueId().toString();
     }
 
 
     public boolean isLinked() {
         try {
-            ResultSet rs = CloudShop.mysql().query("SELECT * FROM `cs_users` WHERE ingame = '" + player.getName() + "'");
+            ResultSet rs = CloudShop.mysql().query("SELECT * FROM `cs_users` WHERE uuid = '" + player.getUniqueId().toString() + "'");
             if (rs.next()) {
-                String username = rs.getString("ingame");
+                String uuid = rs.getString("uuid");
                 String linkCode = rs.getString("linkCode");
                 rs.close();
-                rs = CloudShop.mysql().query("SELECT * FROM `cs_link` WHERE username = '" + username + "' AND linkCode = '" + linkCode + "'");
+                rs = CloudShop.mysql().query("SELECT * FROM `cs_link` WHERE uuid = '" + uuid + "' AND linkCode = '" + linkCode + "'");
                 if (rs.next()) {
-                    return rs.getString("username").equalsIgnoreCase(username);
+                    return rs.getString("uuid").equalsIgnoreCase(uuid);
                 }
             }
         } catch (SQLException e) {
@@ -54,7 +55,7 @@ public class CloudShopper {
         return false;
     }
 
-    public static void listItem(ItemStack itemStack, String playerName, int cost) {
+    public static void listItem(ItemStack itemStack, UUID uuid, int cost) {
         ItemStack item = itemStack.clone();
         ItemMeta meta = item.getItemMeta();
         String name = (item.getItemMeta().getDisplayName() == null) ? "" : item.getItemMeta().getDisplayName();
@@ -82,7 +83,7 @@ public class CloudShopper {
         // Execute Query
         PreparedStatement prepared = CloudShop.mysql().prepareStatement("INSERT INTO cs_items (`seller`, `cost`, `material`, `damage`, `count`, `name`, `enchantments`, `lore`, `dateListed`, `bought`, `boughtby`, `removed`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         try {
-            prepared.setString(1, playerName);
+            prepared.setString(1, uuid.toString());
             prepared.setInt(2, cost);
             prepared.setString(3, item.getType().toString());
             prepared.setShort(4, damage);
@@ -98,7 +99,7 @@ public class CloudShopper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        Player p = Bukkit.getPlayerExact(playerName);
+        Player p = Bukkit.getPlayer(uuid);
         String mat = WordUtils.capitalizeFully(item.getType().toString().replace("_", " "));
         if (name == "")
             name = item.getItemMeta().getDisplayName();

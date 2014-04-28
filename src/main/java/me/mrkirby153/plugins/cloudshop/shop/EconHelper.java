@@ -6,6 +6,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class EconHelper {
 
@@ -13,22 +14,22 @@ public class EconHelper {
 
     public static void updateBalances(){
         for(OfflinePlayer op : Bukkit.getOfflinePlayers()){
-            syncBalance(op.getName());
+            syncBalance(op.getUniqueId());
         }
     }
 
-    public static void syncBalance(String playerName){
-        CloudShopper shopper = Shoppers.findShopperByName(playerName);
+    public static void syncBalance(UUID uuid){
+        CloudShopper shopper = Shoppers.findShopperByUUID(uuid);
         if(shopper == null || !shopper.isLinked())
             return;
-        if(!hasAccount(playerName))
+        if(!hasAccount(uuid))
             return;
-        plugin.mysql().update("UPDATE `cs_users` SET balance = '"+plugin.economy.getBalance(playerName));
+        plugin.mysql().update("UPDATE `cs_users` SET balance = '"+plugin.economy.getBalance(Bukkit.getPlayer(uuid).getName()));
     }
 
-    public static boolean hasAccount(String playerName){
+    public static boolean hasAccount(UUID uuid){
         try{
-            ResultSet rs = plugin.mysql().query("SELECT * FROM `cs_users` WHERE ingame = '"+playerName+"'");
+            ResultSet rs = plugin.mysql().query("SELECT * FROM `cs_users` WHERE uuid = '"+uuid+"'");
             return rs.next();
         } catch (SQLException e){
             e.printStackTrace();
