@@ -3,6 +3,7 @@ package me.mrkirby153.plugins.cloudshop;
 import me.mrkirby153.plugins.cloudshop.command.Commands;
 import me.mrkirby153.plugins.cloudshop.command.CsExecutor;
 import me.mrkirby153.plugins.cloudshop.listeners.ShopperListener;
+import me.mrkirby153.plugins.cloudshop.listeners.web.TCP_Listener;
 import me.mrkirby153.plugins.cloudshop.shop.Shoppers;
 import me.mrkirby153.plugins.cloudshop.utils.ChatHelper;
 import me.mrkirby153.plugins.cloudshop.utils.MySQL;
@@ -17,6 +18,7 @@ public class CloudShop extends JavaPlugin {
     private static CloudShop plugin;
     public Economy economy = null;
     private static MySQL mysql;
+    private static Thread socketListener;
 
     public static CloudShop instance() {
         return plugin;
@@ -27,6 +29,7 @@ public class CloudShop extends JavaPlugin {
     }
 
     public void onDisable() {
+        socketListener.interrupt();
     }
 
     private boolean setupEconomy() {
@@ -61,6 +64,10 @@ public class CloudShop extends JavaPlugin {
         getCommand("cloudshop").setExecutor(new CsExecutor());
         // Register Listeners
         getServer().getPluginManager().registerEvents(new ShopperListener(), this);
+        // Load socket server
+        socketListener = new TCP_Listener();
+        socketListener.start();
+        socketListener.setName("CS_TCP");
         new BukkitRunnable() {
             public void run() {
                 int i = 0;
