@@ -36,4 +36,12 @@ public class EconHelper {
         }
         return false;
     }
+
+    public static double getBalance(UUID uuid){
+        return plugin.economy.getBalance(Bukkit.getPlayer(uuid).getName());
+    }
+
+    public static double getBalance(String string){
+        return plugin.economy.getBalance(string);
+    }
 }
