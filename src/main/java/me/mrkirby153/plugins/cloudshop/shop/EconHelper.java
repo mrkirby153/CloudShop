@@ -41,7 +41,7 @@ public class EconHelper {
         return plugin.economy.getBalance(Bukkit.getPlayer(uuid).getName());
     }
 
-    public static double getBalance(String string){
-        return plugin.economy.getBalance(string);
+    public static double getBalance(String playerName){
+        return plugin.economy.getBalance(playerName);
     }
 }
