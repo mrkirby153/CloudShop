@@ -5,12 +5,14 @@ import me.mrkirby153.plugins.cloudshop.utils.ChatHelper;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
-public class TCP_Listener extends Thread {
+public class TCPListener extends Thread {
 
     private static ServerSocket server;
     private static int port = 555;
 
+    private Socket socket;
 
     public void run() {
         try {
@@ -18,7 +20,7 @@ public class TCP_Listener extends Thread {
             ChatHelper.sendToConsole("Listening on port " + port);
             server = new ServerSocket(port);
             while (!Thread.currentThread().isInterrupted()) { // Repeat until killed.
-                Socket socket = server.accept();
+                socket = server.accept();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                 String line;
@@ -28,21 +30,26 @@ public class TCP_Listener extends Thread {
                         writer.flush();
                         break;
                     }
-                    TCP_Handle.handle(writer, line);
+                    TCPHandle.handle(writer, line);
                 }
                 reader.close();
                 writer.close();
                 socket.close();
             }
             server.close();
+        } catch (SocketException e) {
+            // Ignoree
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace(); //TODO: Better error handling
         }
     }
 
-    public void kill(){
+    public void kill() {
         try {
             server.close();
+            if (socket != null)
+                socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
